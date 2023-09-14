@@ -1,6 +1,6 @@
 # PasswordGenerator
 
-Password Generator is a simply apllication that allows you to randomly generate numeric, text, alphanumeric and alphanumeric + symbols passwords from 8 to 20 characters.
+Password Generator is a simply Java apllication that allows you to randomly generate numeric, text, alphanumeric and alphanumeric + symbols passwords from 8 to 20 characters.
 
 ## Deploying to Production
 
