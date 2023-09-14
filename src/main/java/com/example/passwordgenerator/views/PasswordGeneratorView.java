@@ -31,7 +31,6 @@ import java.util.List;
 @Route(value = "passwordGenerator")
 @RouteAlias(value = "")
 public class PasswordGeneratorView extends HorizontalLayout {
-
     VerticalLayout page;
     VerticalLayout title;
     Image logo;
@@ -39,7 +38,7 @@ public class PasswordGeneratorView extends HorizontalLayout {
     List<String> pswType;
     ComboBox<String> passwordType;
     IntegerField length;
-    int lunghezza;
+    int len;
     Button generate;
     Button newPassword;
     Button clearAll;
@@ -51,6 +50,10 @@ public class PasswordGeneratorView extends HorizontalLayout {
     Generator pg = new Generator();
 
     public PasswordGeneratorView() {
+
+        //Component configuration
+        page = new VerticalLayout();
+
         title = new VerticalLayout();
         logo = new Image();
         logo.setSrc("images/logo-pg.svg");
@@ -59,7 +62,20 @@ public class PasswordGeneratorView extends HorizontalLayout {
         title.add(logo);
         title.setJustifyContentMode(JustifyContentMode.CENTER);
         title.setAlignItems(Alignment.CENTER);
-
+        newPassword = new Button("Generate new password");
+        newPassword.setVisible(false);
+        newPassword.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        newPassword.setIcon(VaadinIcon.REFRESH.create());
+        generate = new Button("Generate password");
+        generate.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        generate.setIcon(VaadinIcon.KEY.create());
+        clearAll = new Button("Reset all");
+        clearAll.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        clearAll.setIcon(VaadinIcon.TRASH.create());
+        info = new Button();
+        info.setIcon(VaadinIcon.INFO_CIRCLE.create());
+        close = new Button();
+        close.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
         field = new VerticalLayout();
         pswType = Arrays.asList("Numeric","Text","Alphanumeric","Complete");
         passwordType = new ComboBox<>("Type of password",pswType);
@@ -70,79 +86,45 @@ public class PasswordGeneratorView extends HorizontalLayout {
         length.setValue(8);
         length.setStepButtonsVisible(true);
         length.setRequired(true);
-        length.setHelperText("Enter a value between 8 and 20");
         generatedPassword = new TextField("Password");
         generatedPassword.setReadOnly(true);
         generatedPassword.setVisible(false);
+        field.add(passwordType,length,generate,generatedPassword,newPassword,clearAll);
 
 
-        newPassword = new Button("Generate new password");
-        newPassword.setVisible(false);
-        newPassword.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        newPassword.setIcon(VaadinIcon.REFRESH.create());
+
         newPassword.addClickListener(e->{
-            lunghezza = length.getValue();
-            if(lunghezza < 8 || lunghezza > 20) {
+            len = length.getValue();
+            if(len < 8 || len > 20) {
                 Notification.show("Password length is not valid", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
-            } else if (passwordType.getValue() == null || length.getValue() == null || lunghezza == -1) {
+            } else if (passwordType.getValue() == null || length.getValue() == null || len == -1) {
                 Notification.show("Check the entered data and try again", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }else {
-                int tipo = passwordType(passwordType.getValue());
-                if(tipo == 1){
-                    generatedPassword.setValue(pg.numeric(lunghezza));
-                    allPassword.add(pg.numeric(lunghezza));
-                } else if (tipo ==2) {
-                    generatedPassword.setValue(pg.text(lunghezza));
-                    allPassword.add(pg.text(lunghezza));
-                } else if (tipo ==3) {
-                    generatedPassword.setValue(pg.alphanumeric(lunghezza));
-                    allPassword.add(pg.alphanumeric(lunghezza));
-                } else if (tipo == 4) {
-                    generatedPassword.setValue(pg.all(lunghezza));
-                    allPassword.add(pg.all(lunghezza));
-                }
+                int type = passwordType(passwordType.getValue());
+                passwordGenerator(type, len);
             }
 
         });
 
-        generate = new Button("Generate password");
         generate.addClickListener(e ->{
-            lunghezza = length.getValue();
-            if(lunghezza < 8 || lunghezza > 20) {
+            len = length.getValue();
+            if(len < 8 || len > 20) {
                 Notification.show("Password length is not valid", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
-            } else if (passwordType.getValue() == null || length.getValue() == null || lunghezza == -1) {
+            } else if (passwordType.getValue() == null || length.getValue() == null || len == -1) {
                 Notification.show("Check the entered data and try again", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }else {
-                int tipo = passwordType(passwordType.getValue());
-                if(tipo == 1){
-                    generatedPassword.setValue(pg.numeric(lunghezza));
-                    allPassword.add(pg.numeric(lunghezza));
-                } else if (tipo ==2) {
-                    generatedPassword.setValue(pg.text(lunghezza));
-                    allPassword.add(pg.text(lunghezza));
-                } else if (tipo ==3) {
-                    generatedPassword.setValue(pg.alphanumeric(lunghezza));
-                    allPassword.add(pg.alphanumeric(lunghezza));
-                } else if (tipo == 4) {
-                    generatedPassword.setValue(pg.all(lunghezza));
-                    allPassword.add(pg.all(lunghezza));
-                }
+                int type = passwordType(passwordType.getValue());
+                passwordGenerator(type, len);
                 generatedPassword.setVisible(true);
                 newPassword.setVisible(true);
                 generate.setVisible(false);
             }
         });
 
-        generate.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        generate.setIcon(VaadinIcon.KEY.create());
-
-        clearAll = new Button("Reset all");
-        clearAll.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        clearAll.setIcon(VaadinIcon.TRASH.create());
         clearAll.addClickListener(e->{
             generate.setVisible(true);
             allPassword.clear();
@@ -154,33 +136,14 @@ public class PasswordGeneratorView extends HorizontalLayout {
             length.setValue(8);
         });
 
-        field.add(passwordType,length,generate,generatedPassword,newPassword,clearAll);
-        field.setJustifyContentMode(JustifyContentMode.CENTER);
-        field.setAlignItems(Alignment.CENTER);
+        info.addClickListener(e-> information.open());
 
-
-
-
-        page = new VerticalLayout();
-        page.add(title,field);
-        page.setAlignItems(Alignment.CENTER);
-        page.setJustifyContentMode(JustifyContentMode.CENTER);
-
-        info = new Button();
-        info.setIcon(VaadinIcon.INFO_CIRCLE.create());
-        info.addClickListener(e->{
-            information.open();
-        });
-
-        close = new Button();
-        close.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
-        close.addClickListener(e->{
-            information.close();
-        });
-
+        close.addClickListener(e-> information.close());
 
         configureField();
         configureDialog();
+
+        page.add(title,field);
 
         add(info,page);
     }
@@ -195,16 +158,44 @@ public class PasswordGeneratorView extends HorizontalLayout {
         };
     }
 
+    private void passwordGenerator(int type, int length){
+        if(type == 1){
+            generatedPassword.setValue(pg.numeric(length));
+            allPassword.add(pg.numeric(length));
+        } else if (type ==2) {
+            generatedPassword.setValue(pg.text(length));
+            allPassword.add(pg.text(length));
+        } else if (type ==3) {
+            generatedPassword.setValue(pg.alphanumeric(length));
+            allPassword.add(pg.alphanumeric(length));
+        } else if (type == 4) {
+            generatedPassword.setValue(pg.all(length));
+            allPassword.add(pg.all(length));
+        }
+    }
+
+
     private void configureField(){
         passwordType.setWidth("500px");
         passwordType.addThemeVariants(ComboBoxVariant.LUMO_ALIGN_CENTER);
+
+        length.setHelperText("Enter a value between 8 and 20");
         length.setWidth("500px");
-        generate.setWidth("500px");
-        clearAll.setWidth("500px");
+
         generatedPassword.setWidth("500px");
         generatedPassword.setHeight("50px");
         generatedPassword.addThemeVariants(TextFieldVariant.LUMO_ALIGN_CENTER);
+
+        generate.setWidth("500px");
+        clearAll.setWidth("500px");
         newPassword.setWidth("500px");
+
+        field.setJustifyContentMode(JustifyContentMode.CENTER);
+        field.setAlignItems(Alignment.CENTER);
+
+        page.setAlignItems(Alignment.CENTER);
+        page.setJustifyContentMode(JustifyContentMode.CENTER);
+
     }
 
     private void configureDialog(){
@@ -214,8 +205,9 @@ public class PasswordGeneratorView extends HorizontalLayout {
         header.setAlignItems(Alignment.CENTER);
         header.setJustifyContentMode(JustifyContentMode.START);
         header.add(headerTitle,close);
-        Paragraph text = new Paragraph("Password Generator allows you to randomly generate numeric, text, alphanumeric and alphanumeric + symbols passwords from 8 to 20 characters.");
+        Paragraph text = new Paragraph("Password Generator allows you to randomly generate numeric, text, alphanumeric and alphanumeric with symbols passwords from 8 to 20 characters.");
         information.add(header,text);
     }
+
 
 }
