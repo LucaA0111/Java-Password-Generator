@@ -11,4 +11,4 @@ ready to be deployed. The file can be found in the `target` folder after the bui
 
 To launch the JAR file use 
 `java -jar passwordgenerator.jar`
-Then open your browser to the URL `[java -jar passwordgenerator.jar](http://localhost:8080)http://localhost:8080`
+Then open your browser to the URL `http://localhost:8080`
