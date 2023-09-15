@@ -1,0 +1,17 @@
+{
+  "frontendFolder": "/Users/lucaacquati/Desktop/PasswordGenerator/frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "/Users/lucaacquati/Desktop/PasswordGenerator/frontend/generated/jar-resources",
+  "staticOutput": "/Users/lucaacquati/Desktop/PasswordGenerator/target/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "/Users/lucaacquati/Desktop/PasswordGenerator/target/classes/META-INF/VAADIN/config",
+  "frontendBundleOutput": "/Users/lucaacquati/Desktop/PasswordGenerator/target/classes/META-INF/VAADIN/webapp",
+  "devBundleOutput": "/Users/lucaacquati/Desktop/PasswordGenerator/src/main/dev-bundle/webapp",
+  "devBundleStatsOutput": "/Users/lucaacquati/Desktop/PasswordGenerator/src/main/dev-bundle/config",
+  "jarResourcesFolder": "/Users/lucaacquati/Desktop/PasswordGenerator/frontend/generated/jar-resources",
+  "themeName": "passwordgenerator",
+  "clientServiceWorkerSource": "/Users/lucaacquati/Desktop/PasswordGenerator/target/sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}
